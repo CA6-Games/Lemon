@@ -1,0 +1,15 @@
+<style>
+    html, body, div, canvas {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+</style>
+
+<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+<script type='text/javascript'>
+var Module = {
+    canvas: (function() { return document.getElementById('canvas'); })()
+};
+</script>
+<script src="web.js"></script>
