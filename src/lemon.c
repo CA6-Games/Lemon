@@ -13,11 +13,21 @@ struct menusItems lemon_topBarItems[] = {
 struct menu_navBars lemon_navBar = {lemon_topBarItems, sizeof(lemon_topBarItems) / sizeof(struct menusItems), NULL, NULL, NULL, 0, 0, 1280, 720 / 15};
 
 struct menusItems lemon_peelItems[] = {
-    {"Lemon",           "res/peel/lemon.png",           NULL,           lemon_setPeel,      0,      NULL, 1, 1},
+    {"Lemon",           "res/peel/lemon.png",           NULL,           lemon_setPeel,      0,       NULL, 1, 1},
+    {"Lemon",           "res/peel/lemon1.png",          NULL,           lemon_setPeel,      50,      NULL, 0, 0},
+    {"Polka",           "res/peel/polka.png",           NULL,           lemon_setPeel,      100,     NULL, 0, 0},
+    {"Textiles",        "res/peel/textiles.png",        NULL,           lemon_setPeel,      250,     NULL, 0, 0},
+    {"Space",           "res/peel/space.png",           NULL,           lemon_setPeel,      500,     NULL, 0, 0},
+    {"Rock",            "res/peel/rock.png",            NULL,           lemon_setPeel,      750,     NULL, 0, 0},
+    {"Camo",            "res/peel/camo.png",            NULL,           lemon_setPeel,      1000,    NULL, 0, 0},
+    {"Glitter",         "res/peel/glitter.png",         NULL,           lemon_setPeel,      1250,    NULL, 0, 0},
+    {"Polygon",         "res/peel/polygon.png",         NULL,           lemon_setPeel,      1500,    NULL, 0, 0},
+    {"Paper",           "res/peel/paper.png",           NULL,           lemon_setPeel,      1750,    NULL, 0, 0},
+    {"PinkLeather",     "res/peel/pinkLeather.png",     NULL,           lemon_setPeel,      2000,    NULL, 0, 0},
+    {"Honey",           "res/peel/honey.png",           NULL,           lemon_setPeel,      2250,    NULL, 0, 0},
+    {"Coffee",          "res/peel/coffee.png",          NULL,           lemon_setPeel,      2500,    NULL, 0, 0},
 
-    {"Polka",           "res/peel/polka.png",           NULL,           lemon_setPeel,      100,    NULL, 0, 0},
-    {"Camo",            "res/peel/camo.png",            NULL,           lemon_setPeel,      400,    NULL, 0, 0},
-    {"Honey",           "res/peel/honey.png",           NULL,           lemon_setPeel,      1000,    NULL, 0, 0},
+    {"Face",            "res/peel/face.png",            NULL,           lemon_setPeel,      3500,   NULL, 0, 0},
 };
 struct menu_grids lemon_peelMenu = {lemon_peelItems, sizeof(lemon_peelItems) / sizeof(struct menusItems), NULL, NULL, NULL, NULL, NULL, NULL, 120, 100, 1040, 520, 8, 4, 0};
 
@@ -89,9 +99,6 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
         if(lemon_peelMenu.mi[i].path != NULL)
         {
             utils2d_loadTexture(c2d, lemon_peelMenu.mi[i].path, &lemon_peelMenu.mi[i].icon);
-#ifdef TEST_ENABLEALL
-            lemon_peelMenu.mi[i].enabled = 1;
-#endif
         }
     }
 
@@ -101,9 +108,6 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
         if(lemon_zestMenu.mi[i].path != NULL)
         {
             utils2d_loadTexture(c2d, lemon_zestMenu.mi[i].path, &lemon_zestMenu.mi[i].icon);
-#ifdef TEST_ENABLEALL
-            lemon_zestMenu.mi[i].enabled = 1;
-#endif
         }
     }
 
@@ -113,9 +117,6 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
         if(lemon_bgMenu.mi[i].path != NULL)
         {
             utils2d_loadTexture(c2d, lemon_bgMenu.mi[i].path, &lemon_bgMenu.mi[i].icon);
-#ifdef TEST_ENABLEALL
-            lemon_bgMenu.mi[i].enabled = 1;
-#endif
         }
     }
 
@@ -150,6 +151,11 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
     data->nbClick = 0;
     data->menu = 0;
     gs->state = 1; // initialized and ready to run
+
+#ifdef TEST_ENABLEALL
+    // set nbClick to in max
+    data->nbClick = INT32_MAX;
+#endif
     
     return 0;
 }
@@ -367,52 +373,52 @@ int lemon_lemon_update(struct context2ds* c2d, struct gstates* gs)
     {
         if(utils2d_clickInRect(c2d, data->l.w, data->l.h, data->l.x, data->l.y))
         {
-            data->nbClick++;
-            printf("Lemon clicked %d times\n", data->nbClick); fflush(stdout);
+            if(data->nbClick < INT32_MAX){
+                data->nbClick++;
+            }
 
             if(data->nbClick > 100 && data->autoPull){
                 // gatcha_pull();
             }
 
-        }
-    }
+            // go throu the peel menu and enable the ones that value < nbClick
+            for(int i = 0; i < lemon_peelMenu.nbItems; i++)
+            {
+                if(lemon_peelMenu.mi[i].value <= data->nbClick)
+                {
+                    lemon_peelMenu.mi[i].enabled = 1;
+                }
+                else
+                {
+                    lemon_peelMenu.mi[i].enabled = 0;
+                }
+            }
 
-    // go throu the peel menu and enable the ones that value < nbClick
-    for(int i = 0; i < lemon_peelMenu.nbItems; i++)
-    {
-        if(lemon_peelMenu.mi[i].value < data->nbClick)
-        {
-            lemon_peelMenu.mi[i].enabled = 1;
-        }
-        else
-        {
-            lemon_peelMenu.mi[i].enabled = 0;
-        }
-    }
+            // go throu the zest menu and enable the ones that value < nbClick
+            for(int i = 0; i < lemon_zestMenu.nbItems; i++)
+            {
+                if(lemon_zestMenu.mi[i].value <= data->nbClick)
+                {
+                    lemon_zestMenu.mi[i].enabled = 1;
+                }
+                else
+                {
+                    lemon_zestMenu.mi[i].enabled = 0;
+                }
+            }
 
-    // go throu the zest menu and enable the ones that value < nbClick
-    for(int i = 0; i < lemon_zestMenu.nbItems; i++)
-    {
-        if(lemon_zestMenu.mi[i].value < data->nbClick)
-        {
-            lemon_zestMenu.mi[i].enabled = 1;
-        }
-        else
-        {
-            lemon_zestMenu.mi[i].enabled = 0;
-        }
-    }
-
-    // go throu the bg menu and enable the ones that value < nbClick
-    for(int i = 0; i < lemon_bgMenu.nbItems; i++)
-    {
-        if(lemon_bgMenu.mi[i].value < data->nbClick)
-        {
-            lemon_bgMenu.mi[i].enabled = 1;
-        }
-        else
-        {
-            lemon_bgMenu.mi[i].enabled = 0;
+            // go throu the bg menu and enable the ones that value < nbClick
+            for(int i = 0; i < lemon_bgMenu.nbItems; i++)
+            {
+                if(lemon_bgMenu.mi[i].value <= data->nbClick)
+                {
+                    lemon_bgMenu.mi[i].enabled = 1;
+                }
+                else
+                {
+                    lemon_bgMenu.mi[i].enabled = 0;
+                }
+            }
         }
     }
     

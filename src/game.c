@@ -316,7 +316,6 @@ int menu_grid_update(struct context2ds* c2d, struct gstates* gs, struct menu_gri
         if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->mi[i+start].enabled)
         {
             g->mi[i].callback(c2d, gs, g->mi[i+start].value, g->mi[i+start].data);
-            printf("Grid item clicked, value: %d\n", g->mi[i+start].value);
             g->mi[i].selected = 1;
         } else {
             g->mi[i].selected = 0;
@@ -330,7 +329,6 @@ int menu_grid_update(struct context2ds* c2d, struct gstates* gs, struct menu_gri
     rect.h = 50;
     if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page > 0)
     {
-        printf("Prev button clicked %d\n", g->page);
         g->page--;
     }
 
@@ -340,7 +338,6 @@ int menu_grid_update(struct context2ds* c2d, struct gstates* gs, struct menu_gri
     rect.h = 50;
     if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page < maxPages)
     {
-        printf("Next button clicked %d\n", g->page);
         g->page++;
     }
 

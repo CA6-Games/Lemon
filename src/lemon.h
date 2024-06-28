@@ -18,7 +18,7 @@ struct lemon_data
 {
     int menu; // 0 = main, 1 = lemon, 2 = skin, 3 = zest
 
-    int nbClick; // number of click on the lemon
+    int32_t nbClick; // number of click on the lemon
 
     int autoPull;
 
