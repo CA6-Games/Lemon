@@ -20,6 +20,8 @@ struct lemon_data
 
     int nbClick; // number of click on the lemon
 
+    int autoPull;
+
     struct lemons l; // the lemon
 };
 

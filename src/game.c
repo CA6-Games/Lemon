@@ -138,8 +138,6 @@ int game_event(struct context2ds* c2d, struct gstates* gs)
 
 void game_loop(void)
 {
-    int quit = 0;
-
     // event
     game_event(c2d, gs);
     if(gs->event != NULL)
@@ -169,11 +167,6 @@ void game_loop(void)
 
     // render 
     SDL_RenderPresent(c2d->r);
-
-    if(gs->state == 4)
-    {
-        quit = 1;
-    }
 }
 
 struct versions{

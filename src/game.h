@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_net.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,10 +33,14 @@ struct context2ds
     struct inputs* i;
 };
 
+#define GSTATES_DATAS_TTV 3
+
 struct gstates
 {
     int state; // 0 = not initialized, 1 = initialized, 2 = running, 3 = paused, 4 = quit
     void* data; // pointer to data of the game running
+
+    void* datas[10]; // data pointers for various libraries
 
     int (*event)(struct context2ds* c2d, struct gstates* gs);       // event handler
     int (*update)(struct context2ds* c2d, struct gstates* gs);      // update handler

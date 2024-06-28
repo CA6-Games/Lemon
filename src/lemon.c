@@ -156,7 +156,8 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_event(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
+    
     return 0;
 }
 
@@ -273,7 +274,7 @@ int lemon_setBG(struct context2ds* c2d, struct gstates* gs, int value, void* dat
 
 int lemon_mainMenu_update(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
 
     return 0;
 }
@@ -297,7 +298,7 @@ int lemon_mainMenu_draw(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_skinMenu_update(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
 
     menu_grid_update(c2d, gs, &lemon_peelMenu);
     
@@ -306,7 +307,7 @@ int lemon_skinMenu_update(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_skinMenu_draw(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
     
     menu_grid_draw(c2d, gs, &lemon_peelMenu);
 
@@ -317,7 +318,7 @@ int lemon_skinMenu_draw(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_zestMenu_update(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
 
     menu_grid_update(c2d, gs, &lemon_zestMenu);
 
@@ -327,7 +328,7 @@ int lemon_zestMenu_update(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_zestMenu_draw(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
     
     menu_grid_draw(c2d, gs, &lemon_zestMenu);
 
@@ -338,7 +339,7 @@ int lemon_zestMenu_draw(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_bg_update(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
 
     menu_grid_update(c2d, gs, &lemon_bgMenu);
 
@@ -348,14 +349,14 @@ int lemon_bg_update(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_bg_draw(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
     
     menu_grid_draw(c2d, gs, &lemon_bgMenu);
 
     return 0;
 }
 
-// ------------- lemon
+// ------------- lemon -------------
 
 int lemon_lemon_update(struct context2ds* c2d, struct gstates* gs)
 {
@@ -368,6 +369,11 @@ int lemon_lemon_update(struct context2ds* c2d, struct gstates* gs)
         {
             data->nbClick++;
             printf("Lemon clicked %d times\n", data->nbClick); fflush(stdout);
+
+            if(data->nbClick > 100 && data->autoPull){
+                // gatcha_pull();
+            }
+
         }
     }
 
@@ -468,7 +474,7 @@ int lemon_lemon_draw(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_gacha_update(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
 
 
     return 0;
@@ -477,7 +483,7 @@ int lemon_gacha_update(struct context2ds* c2d, struct gstates* gs)
 
 int lemon_gacha_draw(struct context2ds* c2d, struct gstates* gs)
 {
-    struct lemon_data* data = (struct lemon_data*)gs->data;
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
     
 
     return 0;

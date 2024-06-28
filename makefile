@@ -16,7 +16,7 @@ ifeq ($(WEB),1)
 else
   CC := gcc
   CXX := g++
-  CC_OPT := -O0 -Wall -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lm
+  CC_OPT := -O0 -Wall -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2_net -lm
   CXX_OPT := -O0
 endif
 
