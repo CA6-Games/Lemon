@@ -36,12 +36,12 @@ $(BIN_DIR)/$(BUILD_FILE): $(OBJS)
 # Build C source
 $(OBJ_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CPPFLAGS) $(CC_OPT) -c $< -o $@
+	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # Build C++ source
 $(OBJ_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXX_OPT) -c $< -o $@
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:

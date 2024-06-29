@@ -44,6 +44,11 @@ int lemon_bg_update(struct context2ds* c2d, struct gstates* gs);
 int lemon_bg_draw(struct context2ds* c2d, struct gstates* gs);
 int lemon_gacha_update(struct context2ds* c2d, struct gstates* gs);
 int lemon_gacha_draw(struct context2ds* c2d, struct gstates* gs);
+int lemon_setingMenu_update(struct context2ds* c2d, struct gstates* gs);
+int lemon_setingMenu_draw(struct context2ds* c2d, struct gstates* gs);
+int lemon_quitMenu_update(struct context2ds* c2d, struct gstates* gs);
+int lemon_quitMenu_draw(struct context2ds* c2d, struct gstates* gs);
+
 
 int lemon_setMenu(struct context2ds* c2d, struct gstates* gs, int value, void* data);
 int lemon_setPeel(struct context2ds* c2d, struct gstates* gs, int value, void* data);

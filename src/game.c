@@ -277,6 +277,11 @@ int menu_navBar_draw(struct context2ds* c2d, struct gstates* gs, struct menu_nav
         {
             SDL_RenderCopy(c2d->r, nb->mi[i].icon, NULL, &rect);
         }
+
+        if(nb->mi[i].name != NULL)
+        {
+            ui_ttfWrite(c2d, nb->mi[i].name, rect.x + rect.w / 2, rect.y + rect.h / 2, 0, 0, 0, NULL, 1, 1);
+        }
     }
 
     return 0;
@@ -327,8 +332,7 @@ int menu_grid_update(struct context2ds* c2d, struct gstates* gs, struct menu_gri
     rect.y = g->y + g->h - 50;
     rect.w = g->w / 2;
     rect.h = 50;
-    if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page > 0)
-    {
+    if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page > 0){
         g->page--;
     }
 
@@ -336,8 +340,7 @@ int menu_grid_update(struct context2ds* c2d, struct gstates* gs, struct menu_gri
     rect.y = g->y + g->h - 50;
     rect.w = g->w / 2;
     rect.h = 50;
-    if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page < maxPages)
-    {
+    if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y) && g->page < maxPages){
         g->page++;
     }
 
@@ -356,8 +359,7 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
 
     int start = g->page * maxItems;
     int end = start + maxItems;
-    if(end > g->nbItems)
-    {
+    if(end > g->nbItems){
         end = g->nbItems;
     }
 
@@ -368,23 +370,16 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
         rect.w = itemWidth;
         rect.h = itemHeight;
 
-        if(g->bgItem != NULL)
-        {
-            if(g->mi[i+start].selected)
-            {
+        if(g->bgItem != NULL){
+            if(g->mi[i+start].selected){
                 SDL_RenderCopy(c2d->r, g->bgItem, NULL, &rect);
-            }
-             else if(!g->mi[i+start].enabled)
-            {
+            }else if(!g->mi[i+start].enabled){
                 SDL_RenderCopy(c2d->r, g->bgItemD, NULL, &rect);
-            } 
-            else
-            {
+            } else{
                 SDL_RenderCopy(c2d->r, g->bgItem, NULL, &rect);
             }
         }
-        else
-        {
+        else{
             SDL_SetRenderDrawColor(c2d->r, 0, 0, 0, 255);
             SDL_RenderDrawRect(c2d->r, &rect);
         }
@@ -394,8 +389,7 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
         rect.w -= 20;
         rect.h -= 20;
 
-        if(g->mi[i+start].icon != NULL)
-        {
+        if(g->mi[i+start].icon != NULL){
             SDL_RenderCopy(c2d->r, g->mi[i+start].icon, NULL, &rect);
         } 
     }
@@ -405,12 +399,9 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
     rect.y = g->y + g->h - 50;
     rect.w = g->w / 4;
     rect.h = 50;
-    if(g->btnPrev != NULL)
-    {
+    if(g->btnPrev != NULL){
         SDL_RenderCopy(c2d->r, g->btnPrev, NULL, &rect);
-    }
-    else
-    {
+    }else{
         SDL_SetRenderDrawColor(c2d->r, 0, 0, 0, 255);
         SDL_RenderDrawRect(c2d->r, &rect);
     }
@@ -420,12 +411,9 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
     rect.y = g->y + g->h - 50;
     rect.w = g->w / 4;
     rect.h = 50;
-    if(g->btnNext != NULL)
-    {
+    if(g->btnNext != NULL){
         SDL_RenderCopy(c2d->r, g->btnNext, NULL, &rect);
-    }
-    else
-    {
+    }else{
         SDL_SetRenderDrawColor(c2d->r, 0, 0, 0, 255);
         SDL_RenderDrawRect(c2d->r, &rect);
     }
@@ -436,16 +424,13 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
 TTF_Font* font = NULL;
 int ui_ttfInit(struct context2ds* c2d, char* fontPath, int fontSize)
 {
-    //  init ttf
-    if(TTF_Init() == -1)
-    {
+    if(TTF_Init() == -1){
         printf("TTF_Init: %s\n", TTF_GetError());
         return 1;
     }
 
     font = TTF_OpenFont(fontPath, fontSize);
-    if(font == NULL)
-    {
+    if(font == NULL){
         printf("TTF_OpenFont: %s\n", TTF_GetError());
         return 1;
     }
@@ -454,19 +439,25 @@ int ui_ttfInit(struct context2ds* c2d, char* fontPath, int fontSize)
 
 }
 
-int ui_ttfWrite(struct context2ds* c2d, char* text, int x, int y, int r, int g, int b, void* img)
+#define TTF_ALIGN_LEFT 0
+#define TTF_ALIGN_CENTER 1
+#define TTF_ALIGN_RIGHT 2
+
+#define TTF_ALIGN_TOP 0
+#define TTF_ALIGN_MIDDLE 1
+#define TTF_ALIGN_BOTTOM 2
+
+int ui_ttfWrite(struct context2ds* c2d, char* text, int x, int y, int r, int g, int b, void* img, int hAlign, int vAlign)
 {
     SDL_Color color = {r, g, b};
     SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-    if(surface == NULL)
-    {
+    if(surface == NULL){
         printf("TTF_RenderText_Solid: %s\n", TTF_GetError());
         return 1;
     }
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(c2d->r, surface);
-    if(texture == NULL)
-    {
+    if(texture == NULL){
         printf("SDL_CreateTextureFromSurface: %s\n", SDL_GetError());
         return 1;
     }
@@ -474,23 +465,69 @@ int ui_ttfWrite(struct context2ds* c2d, char* text, int x, int y, int r, int g, 
     //  aling center text
     SDL_Rect rect = {x, y, 0, 0};
     SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-    rect.x = x - rect.w / 2;
-    rect.y = y - rect.h / 2;
 
-    if(img != NULL)
-    {
+    if(vAlign == 1){
+        rect.y -= rect.h / 2;
+    }else if(vAlign == 2){
+        rect.y -= rect.h;
+    }
+
+    if(hAlign == 1){
+        rect.x -= rect.w / 2;
+    }else if(hAlign == 2){
+        rect.x -= rect.w;
+    }
+
+    if(img != NULL){
         SDL_Rect rect2 = {rect.x-15, rect.y-15, rect.w+30, rect.h+30};
         SDL_RenderCopy(c2d->r, img, NULL, &rect2);
     }
-
-    // draw a rectangle behind the text
-    // SDL_SetRenderDrawColor(c2d->r, 0, 0, 0, 64);
-    // SDL_RenderFillRect(c2d->r, &rect);
 
     SDL_RenderCopy(c2d->r, texture, NULL, &rect);
 
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
+
+    return 0;
+}
+
+// ---- checkbox ----
+
+int checkbox_update(struct context2ds* c2d, struct gstates* gs, struct menu_checkBoxes* cb)
+{
+    SDL_Rect rect = {cb->x, cb->y, cb->w, cb->h};
+
+    if(utils2d_clickInRect(c2d, rect.w, rect.h, rect.x, rect.y)){
+        cb->value = !cb->value;
+    //     if(cb->callback != NULL){
+    //         cb->callback(c2d, gs, cb->value, cb->data);
+        // }
+    }
+
+    return 0;
+}
+
+int checkbox_draw(struct context2ds* c2d, struct gstates* gs, struct menu_checkBoxes* cb)
+{
+    SDL_Rect rect = {cb->x, cb->y, cb->w, cb->h};
+
+    if(cb->bgItemD != NULL && cb->bgItemS != NULL){
+        if(cb->value){
+            SDL_RenderCopy(c2d->r, cb->bgItemS, NULL, &rect);
+        } else{
+            SDL_RenderCopy(c2d->r, cb->bgItemD, NULL, &rect);
+        }
+    } else{
+        if(cb->value){
+            SDL_SetRenderDrawColor(c2d->r, 0, 255, 0, 255);
+            SDL_RenderFillRect(c2d->r, &rect);
+        } else{
+            SDL_SetRenderDrawColor(c2d->r, 255, 0, 0, 255);
+            SDL_RenderFillRect(c2d->r, &rect);
+        }
+    }
+
+    ui_ttfWrite(c2d, cb->text, cb->x + cb->w + 10, cb->y + cb->h / 2, 0, 0, 0, NULL, TTF_ALIGN_LEFT, TTF_ALIGN_MIDDLE);
 
     return 0;
 }

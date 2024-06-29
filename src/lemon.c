@@ -1,14 +1,16 @@
 #include "lemon.h"
 
+// #define TEST_ENABLEALL
 
 struct menusItems lemon_topBarItems[] = {
-    {"Main",            "res/ui/btnHelp.png",           NULL,           lemon_setMenu,      0,      NULL, 1, 1},
-    {"Lemon",           "res/ui/btnLemon.png",          NULL,           lemon_setMenu,      1,      NULL, 0, 1},
-    {"Skin",            "res/ui/btnPeel.png",           NULL,           lemon_setMenu,      2,      NULL, 0, 1},
-    {"Zest",            "res/ui/btnZest.png",           NULL,           lemon_setMenu,      3,      NULL, 0, 1},
-    {"Background",      "res/ui/btnBG.png",             NULL,           lemon_setMenu,      4,      NULL, 0, 1},
-    {"Gacha",           "res/ui/btnGacha.png",          NULL,           lemon_setMenu,      5,      NULL, 0, 0},
-    {"Quit",            "res/ui/btnQuit.png",           NULL,           lemon_setMenu,      -1,     NULL, 0, 1}
+    {"Main",            NULL,                           NULL,           lemon_setMenu,      0,      NULL, 1, 1},
+    {"Lemon",           NULL,                           NULL,           lemon_setMenu,      1,      NULL, 0, 1},
+    {"Peel",            NULL,                           NULL,           lemon_setMenu,      2,      NULL, 0, 1},
+    {"Zest",            NULL,                           NULL,           lemon_setMenu,      3,      NULL, 0, 1},
+    {"BG",              NULL,                           NULL,           lemon_setMenu,      4,      NULL, 0, 1},
+    {"Gacha",           NULL,                           NULL,           lemon_setMenu,      5,      NULL, 0, 0},
+    {"Setting",         NULL,                           NULL,           lemon_setMenu,      6,      NULL, 0, 0},
+    {"Quit",            NULL,                           NULL,           lemon_setMenu,      -1,     NULL, 0, 1}
 };
 struct menu_navBars lemon_navBar = {lemon_topBarItems, sizeof(lemon_topBarItems) / sizeof(struct menusItems), NULL, NULL, NULL, 0, 0, 1280, 720 / 15};
 
@@ -26,6 +28,8 @@ struct menusItems lemon_peelItems[] = {
     {"PinkLeather",     "res/peel/pinkLeather.png",     NULL,           lemon_setPeel,      2000,    NULL, 0, 0},
     {"Honey",           "res/peel/honey.png",           NULL,           lemon_setPeel,      2250,    NULL, 0, 0},
     {"Coffee",          "res/peel/coffee.png",          NULL,           lemon_setPeel,      2500,    NULL, 0, 0},
+    {"Wood",            "res/peel/wood.png",            NULL,           lemon_setPeel,      2500,    NULL, 0, 0},
+    {"Grass",           "res/peel/grass.png",           NULL,           lemon_setPeel,      2750,    NULL, 0, 0},
 
     {"Face",            "res/peel/face.png",            NULL,           lemon_setPeel,      3500,   NULL, 0, 0},
 };
@@ -54,10 +58,15 @@ struct menusItems lemon_bgItems[] = {
 };
 struct menu_grids lemon_bgMenu = {lemon_bgItems, sizeof(lemon_bgItems) / sizeof(struct menusItems), NULL, NULL, NULL, NULL, NULL, NULL, 120, 100, 1040, 520, 8, 4, 0};
 
+struct menu_checkBoxes lemon_setingsItems[] = {
+    {"Auto Gatcha", 0, NULL, NULL, 15, 100, 50, 50},
+    {"Twitch Integration", 0, NULL, NULL, 15, 150, 50, 50},
+};
+
+
 void* instruction;
 void* juice;
 
-// #define TEST_ENABLEALL
 
 int lemon_init(struct context2ds* c2d, struct gstates* gs)
 {
@@ -148,6 +157,13 @@ int lemon_init(struct context2ds* c2d, struct gstates* gs)
     utils2d_loadTexture(c2d, "res/ui/instruction.png", &instruction);
     utils2d_loadTexture(c2d, "res/ui/juice.png", &juice);
 
+
+    for(int i = 0; i < sizeof(lemon_setingsItems) / sizeof(struct menu_checkBoxes); i++)
+    {
+        utils2d_loadTexture(c2d, "res/ui/box_1.png", &lemon_setingsItems[i].bgItemS);
+        utils2d_loadTexture(c2d, "res/ui/box_0.png", &lemon_setingsItems[i].bgItemD);
+    }
+
     data->nbClick = 0;
     data->menu = 0;
     gs->state = 1; // initialized and ready to run
@@ -176,7 +192,11 @@ int lemon_update(struct context2ds* c2d, struct gstates* gs)
     switch(data->menu)
     {
         case -1:
+        #ifdef __EMSCRIPTEN__
+            lemon_quitMenu_update(c2d, gs);
+        #else
             gs->state = 4;
+        #endif
         case 0:
             lemon_mainMenu_update(c2d, gs);
             break;
@@ -195,6 +215,9 @@ int lemon_update(struct context2ds* c2d, struct gstates* gs)
         case 5:
             lemon_gacha_update(c2d, gs);
             break;
+        case 6:
+            lemon_setingMenu_update(c2d, gs);
+            break;
     }
     
     return 0;
@@ -211,22 +234,36 @@ int lemon_draw(struct context2ds* c2d, struct gstates* gs)
     rect.y = 0;
     rect.w = 1280;
     rect.h = 720;
-    for(int i = 0; i < lemon_bgMenu.nbItems; i++)
-    {
-        if(lemon_bgMenu.mi[i].value == data->l.bg)
-        {
-            if(lemon_bgMenu.mi[i].icon != NULL)
-            {
-                SDL_RenderCopy(c2d->r, lemon_bgMenu.mi[i].icon, NULL, &rect);
-            }
-            break;
-        }
-    }
+    switch(data->menu){
+        case -1:
+        case 0:
+        case 6:
+            SDL_RenderCopy(c2d->r, lemon_bgMenu.mi[0].icon, NULL, &rect);
+        break;
+        default:
+            for(int i = 0; i < lemon_bgMenu.nbItems; i++)
+                {
+                    if(lemon_bgMenu.mi[i].value == data->l.bg)
+                    {
+                        if(lemon_bgMenu.mi[i].icon != NULL)
+                        {
+                            SDL_RenderCopy(c2d->r, lemon_bgMenu.mi[i].icon, NULL, &rect);
+                        }
+                        break;
+                    }
+                }
+        break;
+    };
 
     menu_navBar_draw(c2d, gs, &lemon_navBar);
 
     switch(data->menu)
     {
+        case -1:
+        #ifdef __EMSCRIPTEN__
+            lemon_quitMenu_draw(c2d, gs);
+        #endif
+            break;
         case 0:
             lemon_mainMenu_draw(c2d, gs);
             break;
@@ -244,6 +281,9 @@ int lemon_draw(struct context2ds* c2d, struct gstates* gs)
             break;
         case 5:
             lemon_gacha_draw(c2d, gs);
+            break;
+        case 6:
+            lemon_setingMenu_draw(c2d, gs);
             break;
     }
     return 0;
@@ -462,7 +502,7 @@ int lemon_lemon_draw(struct context2ds* c2d, struct gstates* gs)
     // write the number of clicks
     char str[256];
     sprintf(str, "Lemon Slices: %d", data->nbClick);
-    ui_ttfWrite(c2d, str, data->l.x+(data->l.w/2), data->l.y+data->l.h+25, 255, 255, 255, lemon_navBar.bgItem);
+    ui_ttfWrite(c2d, str, data->l.x+(data->l.w/2), data->l.y+data->l.h+25, 255, 255, 255, lemon_navBar.bgItem, 1, 1);
 
     if(utils2d_holdInRect(c2d, data->l.w, data->l.h, data->l.x, data->l.y))
     {
@@ -491,6 +531,50 @@ int lemon_gacha_draw(struct context2ds* c2d, struct gstates* gs)
 {
     // struct lemon_data* data = (struct lemon_data*)gs->data;
     
+
+    return 0;
+}
+
+// setting
+int lemon_setingMenu_update(struct context2ds* c2d, struct gstates* gs)
+{
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
+    
+
+    for(int i = 0; i < sizeof(lemon_setingsItems) / sizeof(struct menu_checkBoxes); i++)
+    {
+        checkbox_update(c2d, gs, &lemon_setingsItems[i]);
+    }
+
+    return 0;
+}
+
+int lemon_setingMenu_draw(struct context2ds* c2d, struct gstates* gs)
+{
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
+    
+    for(int i = 0; i < sizeof(lemon_setingsItems) / sizeof(struct menu_checkBoxes); i++)
+    {
+        checkbox_draw(c2d, gs, &lemon_setingsItems[i]);
+    }
+
+    return 0;
+}
+
+// quit
+int lemon_quitMenu_update(struct context2ds* c2d, struct gstates* gs)
+{
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
+    
+
+    return 0;
+}
+
+int lemon_quitMenu_draw(struct context2ds* c2d, struct gstates* gs)
+{
+    // struct lemon_data* data = (struct lemon_data*)gs->data;
+
+    ui_ttfWrite(c2d, "Can't quit a browser game, close the tab instead", 1280/2, 720/2, 0, 0, 0, NULL, 1, 1);
 
     return 0;
 }

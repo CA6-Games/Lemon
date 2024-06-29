@@ -4,12 +4,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_net.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#define SOFT_VERSION "00.00.03R"
 
 struct mouses{
     int x; // x position
@@ -62,6 +63,24 @@ struct menusItems
     int enabled;
 };
 
+// ----- check box -----
+
+struct menu_checkBoxes
+{
+    char* text;
+    int value;
+
+    void* bgItemS;
+    void* bgItemD;
+
+    int x;
+    int y;
+    int w;
+    int h;
+};
+int checkbox_draw(struct context2ds* c2d, struct gstates* gs, struct menu_checkBoxes* cb);
+int checkbox_update(struct context2ds* c2d, struct gstates* gs, struct menu_checkBoxes* cb);
+
 // ----- nav Bar -----
 
 struct menu_navBars
@@ -111,4 +130,4 @@ int menu_grid_draw(struct context2ds* c2d, struct gstates* gs, struct menu_grids
 // ----- text
 
 int ui_ttfInit(struct context2ds* c2d, char* fontPath, int fontSize);
-int ui_ttfWrite(struct context2ds* c2d, char* text, int x, int y, int r, int g, int b, void* img);
+int ui_ttfWrite(struct context2ds* c2d, char* text, int x, int y, int r, int g, int b, void* img, int hAlign, int vAlign);

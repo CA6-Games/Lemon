@@ -75,7 +75,7 @@ int inic_init(struct inics* ics, char* path)
     }
 
     ics->path = path;
-    ics->fd = fopen(ics->path, "r");
+    ics->fd = fopen(ics->path, "rw");
     if(ics->fd == NULL){
         return -2;  // file not found
     }
@@ -292,7 +292,11 @@ int inic_writeIni(struct inics* ics, struct inic_datas* datas, int nbDatas)
                 fprintf(ics->fd, "%s=%u\n", datas[i].name, *((uint32_t*)datas[i].data));
                 break;
             case TYPE_UINT64:
-                fprintf(ics->fd, "%s=%lu\n", datas[i].name, *((uint64_t*)datas[i].data));
+                #ifdef __EMSCRIPTEN__
+                    fprintf(ics->fd, "%s=%llu\n", datas[i].name, *((uint64_t*)datas[i].data));
+                #else
+                    fprintf(ics->fd, "%s=%lu\n", datas[i].name, *((uint64_t*)datas[i].data));
+                #endif
                 break;
             case TYPE_INT8:
                 fprintf(ics->fd, "%s=%d\n", datas[i].name, *((int8_t*)datas[i].data));
@@ -304,7 +308,11 @@ int inic_writeIni(struct inics* ics, struct inic_datas* datas, int nbDatas)
                 fprintf(ics->fd, "%s=%d\n", datas[i].name, *((int32_t*)datas[i].data));
                 break;
             case TYPE_INT64:
-                fprintf(ics->fd, "%s=%ld\n", datas[i].name, *((int64_t*)datas[i].data));
+                #ifdef __EMSCRIPTEN__
+                    fprintf(ics->fd, "%s=%lld\n", datas[i].name, *((int64_t*)datas[i].data));
+                #else
+                    fprintf(ics->fd, "%s=%lu\n", datas[i].name, *((uint64_t*)datas[i].data));
+                #endif
                 break;
             case TYPE_FLOAT:
                 fprintf(ics->fd, "%s=%f\n", datas[i].name, *((float*)datas[i].data));
@@ -346,7 +354,11 @@ int inic_writeCsv(struct inics* ics, struct inic_datas* datas, int nbDatas)
                 fprintf(ics->fd, "%u", *((uint32_t*)datas[i].data));
                 break;
             case TYPE_UINT64:
-                fprintf(ics->fd, "%lu", *((uint64_t*)datas[i].data));
+                #ifdef __EMSCRIPTEN__
+                    fprintf(ics->fd, "%llu", *((uint64_t*)datas[i].data));
+                #else
+                    fprintf(ics->fd, "%lu", *((uint64_t*)datas[i].data));
+                #endif
                 break;
             case TYPE_INT8:
                 fprintf(ics->fd, "%d", *((int8_t*)datas[i].data));
@@ -358,7 +370,11 @@ int inic_writeCsv(struct inics* ics, struct inic_datas* datas, int nbDatas)
                 fprintf(ics->fd, "%d", *((int32_t*)datas[i].data));
                 break;
             case TYPE_INT64:
-                fprintf(ics->fd, "%ld", *((int64_t*)datas[i].data));
+                #ifdef __EMSCRIPTEN__
+                    fprintf(ics->fd, "%lld", *((int64_t*)datas[i].data));
+                #else
+                    fprintf(ics->fd, "%ld", *((int64_t*)datas[i].data));
+                #endif
                 break;
             case TYPE_FLOAT:
                 fprintf(ics->fd, "%f", *((float*)datas[i].data));

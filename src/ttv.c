@@ -1,12 +1,13 @@
-#include "game.h"
+#include "ttv.h"
 
 struct ttv_data
 {
+#ifndef __EMSCRIPTEN__
     char* channel;
     TCPsocket socket;
     int connected;
+#endif
 };
-
 
 int ttv_globalInit();
 int ttv_globalDeInit();
@@ -14,53 +15,29 @@ int ttv_init(struct context2ds* c2d, struct gstates* gs, char* username, char* p
 int ttv_deinit(struct context2ds* c2d, struct gstates* gs);
 int ttv_read(struct context2ds* c2d, struct gstates* gs);
 
-int ttv_test(struct context2ds* c2d, struct gstates* gs)
-{
-    int i = 0;
-    printf("ttv_test\n");
-
-    ttv_globalInit();
-    ttv_init(c2d, gs, "justinfan121345", "justinfan121345", "saruei");
-    while(i==0)
-    {
-        SDL_Event event;
-
-        while(SDL_PollEvent(&event))
-        {
-            if(event.type == SDL_QUIT)
-            {
-                i=1;
-                break;
-            }
-        }
-
-        ttv_read(c2d, gs);
-        usleep(1000);
-    }
-    ttv_deinit(c2d, gs);
-    ttv_globalDeInit();
-
-    return 0;
-}
-
 int ttv_globalInit()
 {
+#ifndef __EMSCRIPTEN__
     if (SDLNet_Init() < 0)
     {
         printf("SDLNet_Init failed: %s\n", SDLNet_GetError());
         return 1;
     }
+#endif
     return 0;
 }
 
 int ttv_globalDeInit()
 {
+#ifndef __EMSCRIPTEN__
     SDLNet_Quit();
+#endif
     return 0;
 }
 
 int ttv_init(struct context2ds* c2d, struct gstates* gs, char* username, char* password, char* channel)
 {
+#ifndef __EMSCRIPTEN__
     gs->datas[GSTATES_DATAS_TTV] = malloc(sizeof(struct ttv_data));
     struct ttv_data* ttv = (struct ttv_data*)gs->datas[GSTATES_DATAS_TTV];
     memset(ttv, 0, sizeof(struct ttv_data));
@@ -137,20 +114,23 @@ int ttv_init(struct context2ds* c2d, struct gstates* gs, char* username, char* p
     //     printf("-"); fflush(stdout);
     //     return 1;
     // }
-
+#endif
     return 0;
 }
 
 int ttv_deinit(struct context2ds* c2d, struct gstates* gs)
 {
+#ifndef __EMSCRIPTEN__
     struct ttv_data* ttv = (struct ttv_data*)gs->datas[GSTATES_DATAS_TTV];
     SDLNet_TCP_Close(ttv->socket);
     free(ttv);
+#endif
     return 0;
 }
 
 int ttv_read(struct context2ds* c2d, struct gstates* gs)
 {
+#ifndef __EMSCRIPTEN__
     struct ttv_data* ttv = (struct ttv_data*)gs->datas[GSTATES_DATAS_TTV];
     char buffer[4096] = { 0 };
     if (SDLNet_TCP_Recv(ttv->socket, buffer, sizeof(buffer)) <= 0) {
@@ -161,6 +141,7 @@ int ttv_read(struct context2ds* c2d, struct gstates* gs)
         return 1;
     }
     printf("%s", buffer);
+#endif
     return 0;
 }
 

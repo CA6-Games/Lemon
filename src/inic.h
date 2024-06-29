@@ -28,10 +28,18 @@ struct inics
     FILE* fd;
 };
 
+// open/close the file
+int inic_init(struct inics* ics, char* path);                                   // open the file
+int inic_close(struct inics* ics);                                              // close the file
 
-int inic_init(struct inics* ics, char* path);
-int inic_readSection(struct inics* ics, char* section);
-int inic_readCsv(struct inics* ics, struct inic_datas* datas, int nbDatas);
-int inic_readIni(struct inics* ics, struct inic_datas* datas, int nbDatas);
-int inic_close(struct inics* ics);
+// read the file
+int inic_readSection(struct inics* ics, char* section);                         // read to the section
+int inic_readCsv(struct inics* ics, struct inic_datas* datas, int nbDatas);     // read a csv line
+int inic_readIni(struct inics* ics, struct inic_datas* datas, int nbDatas);     // read a ini section
+
+// write the file
+int inic_writeSection(struct inics* ics, char* section);                        // write a section in the file
+int inic_writeIni(struct inics* ics, struct inic_datas* datas, int nbDatas);    // write a ini section
+int inic_writeCsv(struct inics* ics, struct inic_datas* datas, int nbDatas);    // write a csv line
+
 
